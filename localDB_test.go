@@ -15,6 +15,12 @@ func TestLocalDBGet(t *testing.T) {
 	if strings.Compare(string(google), loc["ABC"]) != 0 {
 		t.Errorf("Unexpected entry, ABC should poing to http://google.com")
 	}
+
+	none := loc.Get([]byte("QWE"))
+	if none != nil {
+		t.Errorf("Unexpected valid entry coming from non existant key in map")
+	}
+
 }
 
 func TestLocalDBPut(t *testing.T) {
@@ -31,4 +37,8 @@ func TestLocalDBPut(t *testing.T) {
 
 	}
 
+	none := loc.Get([]byte("QWE"))
+	if none != nil {
+		t.Errorf("Unexpected valid entry coming from non existant key in map")
+	}
 }
