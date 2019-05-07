@@ -24,5 +24,18 @@ func TestEncodeURL(t *testing.T) {
 }
 
 func TestDecodeURL(t *testing.T) {
+	testV := []string{"ABC", "https://google.com"}
+	db := map[string]string{
+		testV[0]: testV[1],
+	}
+	loc := localDB(db)
+	shortener := newURLShortener(&loc)
+
+	targetURL := shortener.DecodeURL([]byte(testV[0]))
+
+	if strings.Compare(string(targetURL), testV[1]) != 0 {
+		baseMessage := "Unexpected retrieved value %s with key %s expected %s"
+		t.Errorf(baseMessage, string(targetURL), testV[0], testV[1])
+	}
 
 }
