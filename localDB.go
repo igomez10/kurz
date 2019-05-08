@@ -15,12 +15,12 @@ func (l localDB) Get(key []byte) []byte {
 
 }
 
-func (l *localDB) Put(key, value []byte) {
-	(*l)[string(key)] = string(value)
+func (l localDB) Put(key, value []byte) {
+	(l)[string(key)] = string(value)
 }
 
-func newLocalDB() *localDB {
+func newLocalDB() *DataContainer {
 	regularMap := make(map[string]string)
-	loc := localDB(regularMap)
+	loc := DataContainer(localDB(regularMap))
 	return &loc
 }

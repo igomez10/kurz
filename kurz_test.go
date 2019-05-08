@@ -9,7 +9,7 @@ func TestEncodeURL(t *testing.T) {
 	initialURL := "http://google.com"
 
 	db := newLocalDB()
-	shortener := newURLShortener(db)
+	shortener := newURLShortener(*db)
 	encoded, err := shortener.EncodeURL(initialURL)
 	if err != nil {
 		t.Errorf("unexpected error: %+v", err)

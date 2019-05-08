@@ -35,8 +35,7 @@ func (u *URLShortener) EncodeURL(initialURL string) (string, error) {
 	return string(encoded), nil
 }
 
-// DecodeURL returns the full URL associated to the given shortened
-// URL
+// DecodeURL returns the full URL associated to the given shortened URL
 func (u *URLShortener) DecodeURL(shortenedURL []byte) []byte {
 	return u.data.Get(shortenedURL)
 }
