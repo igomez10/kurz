@@ -3,6 +3,10 @@ package kurz
 import (
 	"crypto/sha1"
 	"encoding/base64"
+	"fmt"
+	"log"
+	"net/http"
+	"strings"
 )
 
 // DataContainer is a general interface where the entries will be stored
@@ -42,4 +46,30 @@ func (u *URLShortener) DecodeURL(shortenedURL []byte) []byte {
 
 func newURLShortener(d DataContainer) *URLShortener {
 	return &URLShortener{data: d}
+}
+
+// HandleEncoder handles the call for encoding a URL
+func (u *URLShortener) HandleEncoder(w http.ResponseWriter, r *http.Request) {
+	path := r.URL.EscapedPath() // expected format /encode/<base64_encodedURL>
+	splitted := strings.SplitN(path, "/encode/", 1)
+
+	if len(splitted) != 1 {
+		w.WriteHeader(http.StatusBadRequest)
+		fmt.Fprintf(w, "Invalid resource")
+		return
+	}
+
+	base64URLToEncode := splitted[1]
+
+	urlToEncode := base64.StdEncoding.EncodeToString([]byte(base64URLToEncode))
+
+	storedKey, err := u.EncodeURL(urlToEncode)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Fprint(w, "Unexpected Error encoding URL")
+		log.Println(err)
+		return
+	}
+
+	fmt.Fprint(w, storedKey)
 }
