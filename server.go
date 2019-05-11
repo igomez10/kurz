@@ -1,8 +1,11 @@
 package kurz
 
 import (
+	"encoding/base64"
+	"errors"
 	"fmt"
 	"net/http"
+	"strings"
 )
 
 type server URLShortener
@@ -23,4 +26,22 @@ func Start(port int) error {
 
 func (s *server) serveEncodeURL(w http.ResponseWriter, r *http.Request) {
 
+}
+
+func getURLParam(fixedPath string, path string) (string, error) {
+	urlToEncode := strings.TrimPrefix(path, fixedPath)
+
+	// if no path is found
+	if strings.Compare(urlToEncode, fixedPath) == 0 {
+		errorToReturn := errors.New("invalid url to encode, check fixedPath in URL")
+		return "", errorToReturn
+	}
+
+	// decode url to encode from the given path
+	parsedValue, err := base64.StdEncoding.DecodeString(urlToEncode)
+	if err != nil {
+		errorMessage := fmt.Sprintf("Unable to decode base64 string: %s", err)
+		return "", errors.New(errorMessage)
+	}
+	return string(parsedValue), nil
 }
